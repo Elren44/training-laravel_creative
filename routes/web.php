@@ -21,3 +21,4 @@ Route::get('/', function () {
 Route::get("/login", [AuthController::class, 'login']);
 
 Route::get("/posts", [PostController::class, "index"]);
+Route::get("/posts/create", [PostController::class, "create"]);
