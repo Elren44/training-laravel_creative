@@ -1,0 +1,21 @@
+@extends('layouts.main')
+@section('content')
+    <h3>Ваш пост</h3>
+    <div>
+        id: {{$post->id}}
+    </div>
+    <div>
+        Заголовок: {{$post->title}}
+    </div>
+    <div>Контент: {{$post->content}}</div>
+    <br>
+    <div class="row gx-1">
+        <div class="col col-2 col-sm-2 col-md-1 mb-2" style="min-width: 100px">
+            <a class="btn btn-primary" href="{{route('post.index')}}">Назад</a>
+        </div>
+        <div class="col col-2 col-sm-2 col-md-1" style="min-width: 100px">
+            <a class="btn btn-primary" href="{{route('post.edit', $post->id)}}">Редактировать</a>
+        </div>
+    </div>
+    <div class="mt-5"><a class="btn btn-danger " href="{{route('post.delete', $post->id)}}">Удалить</a></div>
+@endsection

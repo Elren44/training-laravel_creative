@@ -2,68 +2,106 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Post;
+use App\Models\PostTag;
+use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     //
 
-    public function index(): void
+    public function index()
     {
+//        $category = Category::find(1);
+//        $post = Post::find(1);
+//        $tag = Tag::find(1);
+//        echo "Посты по категории:";
+//        dump($category->posts->toArray());
+//        echo "Категории поста: ";
+//        dump($post->category->toArray());
+//        echo "Теги поста: ";
+//        dump($post->tags->toArray());
+//        echo "Посты по тегу: ";
+//        dump($tag->posts->toArray());
 //       $posts = Post::all()->where("is_published", 0)->first();
-        $posts = Post::all()->where("is_published", 1)->first();
-
-        foreach ($posts->attributesToArray() as $post) {
-            dump($post);
-        }
-//       dump($posts->title);
-//       dump("likes: $post->likes");
+        $posts = Post::all();
+        return view('post.index', compact('posts'));
     }
 
     public function create()
     {
-        $postsArr = [
-            [
-                'title' => 'first post from phpstorm',
-                'content' => 'first content from created post',
-                'image' => 'firstsomeimage.jpg',
-                'likes' => 11,
-                'is_published' => 1,
-            ],
-            [
-                'title' => 'second post from phpstorm',
-                'content' => 'second content from created post',
-                'image' => 'secondsomeimage.jpg',
-                'likes' => 22,
-                'is_published' => 1,
-            ]
-        ];
-//        Post::create([
-//            'title'=> 'first post from phpstorm',
-//            'content'=> 'first content from created post',
-//            'image'=> 'firstsomeimage.jpg',
-//            'likes'=> 11,
-//            'is_published'=> 1,
-//        ]);
-        foreach ($postsArr as $item) {
-            Post::create($item);
-        }
-        dd('created');
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('post.create', compact('categories', 'tags'));
     }
 
-    public function update()
+    public function store(Request $request): RedirectResponse
     {
-        $post = Post::find(5);
-
-        $post->update([
-            'title' => 'updated',
-            'content' => 'updated',
-            'image' => 'updated.jpg',
-            'likes' => 22,
-            'is_published' => 1,
+        $data = $request->validate([
+            'title' => 'required|string',
+            'content' => 'required|string',
+            'image' => 'string',
+            'category_id' => '',
+            'tags' => ''
         ]);
-        dd('updated');
+
+        $tags = $data['tags'];
+        unset($data['tags']);
+//        dd($tags, $data);
+        $post = Post::create($data);
+        $post->tags()->attach($tags);
+//        foreach ($tags as $tag) {
+//            PostTag::firstOrCreate([
+//                'tag_id' => $tag,
+//                'post_id' => $post->id
+//            ]);
+//        }
+        return redirect()->route('post.index');
     }
+
+    public function show(Post $post)
+    {
+//        $currentPost = $post->attributesToArray();
+
+        return view('post.show', compact('post'));
+
+    }
+
+    public function edit(Post $post)
+    {
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('post.edit', compact('post', 'categories', 'tags'));
+
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        $data = $request->validate([
+            'title' => 'string',
+            'content' => 'string',
+            'image' => 'string',
+            'category_id' => '',
+            'tags' => ''
+
+
+        ]);
+        $tags = $data['tags'];
+        unset($data['tags']);
+        $post->update($data);
+        $post->tags()->sync($tags);
+        return redirect()->route('post.show', $post->id);
+    }
+
+    public function destroy(Post $post)
+    {
+        $post->delete();
+        return redirect()->route('post.index');
+    }
+
 
     public function delete()
     {
@@ -94,7 +132,8 @@ class PostController extends Controller
         dd($post->content);
     }
 
-    public function updateOrCreate() {
+    public function updateOrCreate()
+    {
         Post::updateOrCreate(
             ['title' => 'some2'],
             [
