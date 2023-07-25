@@ -23,7 +23,10 @@
 <body>
 <div>Страница posts</div>
 <div>
-    <table class="table">
+    <div class="my-2">
+        {{$posts->links()}}
+    </div>
+    <table class="table ">
         <thead>
         <tr>
             <th scope="col">#id</th>
@@ -48,6 +51,9 @@
         @endforeach
         </tbody>
     </table>
+    <br>
+
+
 </div>
 
 <a class="btn btn-primary" href="{{route('post.create')}}">Создать пост</a>

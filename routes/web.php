@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\AuthController;
-use \App\Http\Controllers\PostController;
 use \App\Http\Controllers\MainController;
 use \App\Http\Controllers\AboutController;
 use \App\Http\Controllers\ContactsController;
+
+use App\Http\Controllers\Post as Post;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,15 +26,20 @@ Route::get('/contacts', [ContactsController::class, 'index'])->name('contact.ind
 
 Route::get("/login", [AuthController::class, 'login']);
 
-Route::get("/posts", [PostController::class, "index"])->name('post.index');
-Route::get("/posts/create", [PostController::class, "create"])->name('post.create');
-Route::post("/posts", [PostController::class, "store"])->name('post.store');
-Route::get('/posts/{post}', [PostController::class, 'show'])->name('post.show');
-Route::get('/posts/{post}/edit', [PostController::class, 'edit'])->name('post.edit');
-Route::patch('/posts/{post}', [PostController::class, 'update'])->name('post.update');
-Route::delete('/posts/{post}', [PostController::class, 'destroy'])->name('post.delete');
+Route::group([], function () {
+    Route::get("/posts", Post\IndexController::class)->name('post.index');
+    Route::get("/posts/create", Post\CreateController::class)->name('post.create');
+    Route::post("/posts", Post\StoreController::class)->name('post.store');
+    Route::get('/posts/{post}', Post\ShowController::class)->name('post.show');
+    Route::get('/posts/{post}/edit', Post\EditController::class)->name('post.edit');
+    Route::patch('/posts/{post}', Post\UpdateController::class)->name('post.update');
+    Route::delete('/posts/{post}', Post\DestroyController::class)->name('post.delete');
+});
 
-Route::get("/posts/update", [PostController::class, "update"]);
-Route::get("/posts/delete", [PostController::class, "delete"]);
-Route::get("/posts/first_or_create", [PostController::class, "firstOrCreate"]);
-Route::get("/posts/update_or_create", [PostController::class, "updateOrCreate"]);
+
+
+
+//Route::get("/posts/update", [PostController::class, "update"]);
+//Route::get("/posts/delete", [PostController::class, "delete"]);
+//Route::get("/posts/first_or_create", [PostController::class, "firstOrCreate"]);
+//Route::get("/posts/update_or_create", [PostController::class, "updateOrCreate"]);

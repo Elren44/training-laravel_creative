@@ -17,5 +17,12 @@
             <a class="btn btn-primary" href="{{route('post.edit', $post->id)}}">Редактировать</a>
         </div>
     </div>
-    <div class="mt-5"><a class="btn btn-danger " href="{{route('post.delete', $post->id)}}">Удалить</a></div>
+    <div class="mt-3">
+        <form action="{{route('post.delete', $post->id)}}" method="post">
+            @csrf
+            @method('DELETE')
+            <button class="btn btn-danger" type="submit">Удалить</button>
+        </form>
+        {{--        <a class="btn btn-danger" href="{{route('post.delete', $post->id)}}">Удалить</a>--}}
+    </div>
 @endsection
