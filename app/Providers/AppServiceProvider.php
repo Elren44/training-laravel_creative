@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Post;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use  Illuminate\Support\Facades\View;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,5 +25,8 @@ class AppServiceProvider extends ServiceProvider
         //
         Paginator::defaultView('vendor.pagination.bootstrap-5');
 //        Paginator::useBootstrapFive();
+        View::composer('includes.admin.sidebar', function ($view) {
+            $view->with('postcount', Post::all()->count());
+        });
     }
 }
