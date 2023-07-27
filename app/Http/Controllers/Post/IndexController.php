@@ -11,6 +11,7 @@ class IndexController extends BaseController
 {
     public function __invoke(FilterRequest $request)
     {
+        $this->authorize('view', auth()->user());
 
         $data = $request->validated();
 
